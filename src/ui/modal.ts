@@ -75,7 +75,8 @@ export function createModal(
   closeBtn.type = "button";
   closeBtn.className = "cc-close";
   closeBtn.setAttribute("aria-label", L.close);
-  closeBtn.append(textEl("span", L.close), textEl("span", "✕", "cc-close-x"));
+  // Icon-only close (✕). aria-label keeps it announced as "Close" for screen readers.
+  closeBtn.append(textEl("span", "✕", "cc-close-x"));
   closeBtn.addEventListener("click", cb.onClose);
   header.append(titleWrap, closeBtn);
   dialog.appendChild(header);

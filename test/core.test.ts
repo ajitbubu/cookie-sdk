@@ -93,6 +93,18 @@ describe("banner actions", () => {
       marketing: false,
     });
   });
+
+  it("Preferences renders as a button, not a link", () => {
+    init(baseConfig);
+    const prefs = Array.from(
+      shadow().querySelectorAll<HTMLButtonElement>(".cc-banner button"),
+    ).find((b) => b.textContent === "Preferences");
+    expect(prefs).toBeTruthy();
+    expect(prefs!.tagName).toBe("BUTTON");
+    // Reads as a bordered button, not the old underlined-link styling.
+    expect(prefs!.classList.contains("cc-secondary")).toBe(true);
+    expect(prefs!.classList.contains("cc-tertiary")).toBe(false);
+  });
 });
 
 describe("preferences modal", () => {

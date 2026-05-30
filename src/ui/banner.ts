@@ -23,8 +23,9 @@ export function createBanner(labels: Labels, cb: BannerCallbacks): HTMLElement {
   actions.className = "cc-actions";
 
   // Equal visual weight for Accept and Reject (consent fairness — neither is
-  // easier to click than the other). Preferences is a quieter tertiary action.
-  const prefs = button(labels.preferences, cb.onPreferences, "cc-tertiary");
+  // easier to click than the other). Preferences is a secondary button —
+  // bordered, lower emphasis than the filled primaries, but a button, not a link.
+  const prefs = button(labels.preferences, cb.onPreferences, "cc-secondary");
   const reject = button(labels.rejectAll, cb.onRejectAll, "cc-primary");
   const accept = button(labels.acceptAll, cb.onAcceptAll, "cc-primary");
 
