@@ -2,14 +2,16 @@ import type { CategoryKey } from "./shared";
 
 export interface CookieDef {
   name: string;
-  provider: string;
-  purpose: string;
-  duration: string;
+  provider?: string;
+  domain?: string;
+  purpose?: string;
+  duration?: string;
 }
 
 export interface CategoryConfig {
   enabled?: boolean; // default state when no prior consent
   locked?: boolean; // true only for necessary
+  description?: string; // shown on the category card + detail view
   cookies: CookieDef[];
 }
 
@@ -22,8 +24,23 @@ export interface Labels {
   rejectNonEssential: string;
   savePreferences: string;
   reopenButton: string;
-  categoryNames: Record<CategoryKey, string>;
   alwaysActive: string;
+  close: string;
+  viewCookies: string;
+  backToCategories: string;
+  searchPlaceholder: string;
+  exportLabel: string;
+  printLabel: string;
+  resetToDefault: string;
+  confirmChoices: string;
+  policyLinkText: string;
+  gpcNotice: string;
+  gpcHonored: string;
+  noCookies: string;
+  notAvailable: string;
+  columns: { name: string; provider: string; domain: string; expiry: string };
+  categoryNames: Record<CategoryKey, string>;
+  categoryDescriptions: Record<CategoryKey, string>;
 }
 
 export interface CookieConsentConfig {
@@ -31,6 +48,8 @@ export interface CookieConsentConfig {
   cookieDomain?: string; // share across subdomains; defaults to current host
   consentVersion: number; // bump to force re-prompt
   expiryDays: number;
+  policyUrl?: string; // "Read our Cookie Policy" link target
+  honorGpc: boolean; // honor Global Privacy Control signal
   categories: Record<CategoryKey, CategoryConfig>;
   gtm: { consentMode: boolean; dataLayerEvent: string };
   labels: Labels;
@@ -45,16 +64,41 @@ export const DEFAULT_LABELS: Labels = {
   rejectAll: "Reject All",
   preferences: "Preferences",
   modalTitle: "Cookie Preferences",
-  rejectNonEssential: "Reject All", // necessary cookies always stay on; "Reject All" matches the banner
+  rejectNonEssential: "Reject Non-Essential",
   savePreferences: "Save Preferences",
   reopenButton: "Cookie settings",
+  alwaysActive: "Always Active",
+  close: "Close",
+  viewCookies: "View Cookies",
+  backToCategories: "Back to categories",
+  searchPlaceholder: "Search cookies...",
+  exportLabel: "Export",
+  printLabel: "Print",
+  resetToDefault: "Reset to Default",
+  confirmChoices: "Confirm Choices",
+  policyLinkText: "Read our Cookie Policy",
+  gpcNotice:
+    "Your browser sent a Global Privacy Control (GPC) signal, so we have defaulted marketing and ad-targeting cookies to off. Strictly necessary cookies remain active to keep the site working. You may still review and enable optional analytics or functional cookies below, or leave them disabled — your choice is saved and can be changed at any time.",
+  gpcHonored: "Opt-Out Request Honored",
+  noCookies: "No cookies in this category.",
+  notAvailable: "N/A",
+  columns: { name: "Cookie", provider: "Provider", domain: "Domain", expiry: "Expiry" },
   categoryNames: {
-    necessary: "Strictly Necessary",
+    necessary: "Strictly Necessary Cookies",
     analytics: "Performance / Analytics",
-    functional: "Functional",
-    marketing: "Marketing",
+    functional: "Functional Cookies",
+    marketing: "Marketing Cookies",
   },
-  alwaysActive: "Always active",
+  categoryDescriptions: {
+    necessary:
+      "These cookies are essential for the website to function and cannot be switched off. They are usually only set in response to actions made by you, such as setting your privacy preferences.",
+    analytics:
+      "These cookies allow us to count visits and traffic sources so we can measure and improve site performance.",
+    functional:
+      "These cookies enable enhanced functionality and personalisation.",
+    marketing:
+      "These cookies are used to build a profile of your interests and show relevant ads. Covers sale or sharing of personal data where applicable.",
+  },
 };
 
 const CATEGORY_KEYS: CategoryKey[] = ["necessary", "analytics", "functional", "marketing"];
@@ -72,6 +116,7 @@ const DEFAULTS = {
   cookieName: "cc_consent",
   consentVersion: 1,
   expiryDays: 182,
+  honorGpc: true,
   gtm: { consentMode: true, dataLayerEvent: "cookie_consent_update" },
 };
 
@@ -91,14 +136,21 @@ export function resolveConfig(input: Partial<CookieConsentConfig>): CookieConsen
     cookieDomain: input.cookieDomain,
     consentVersion: input.consentVersion ?? DEFAULTS.consentVersion,
     expiryDays: input.expiryDays ?? DEFAULTS.expiryDays,
+    policyUrl: input.policyUrl,
+    honorGpc: input.honorGpc ?? DEFAULTS.honorGpc,
     categories,
     gtm: { ...DEFAULTS.gtm, ...(input.gtm || {}) },
     labels: {
       ...DEFAULT_LABELS,
       ...(input.labels || {}),
+      columns: { ...DEFAULT_LABELS.columns, ...(input.labels?.columns || {}) },
       categoryNames: {
         ...DEFAULT_LABELS.categoryNames,
         ...(input.labels?.categoryNames || {}),
+      },
+      categoryDescriptions: {
+        ...DEFAULT_LABELS.categoryDescriptions,
+        ...(input.labels?.categoryDescriptions || {}),
       },
     },
     theme: input.theme,
@@ -120,6 +172,8 @@ export function parseDataAttributes(el: HTMLElement): Partial<CookieConsentConfi
   if (version && !Number.isNaN(Number(version))) out.consentVersion = Number(version);
   const expiry = el.getAttribute("data-expiry-days");
   if (expiry && !Number.isNaN(Number(expiry))) out.expiryDays = Number(expiry);
+  const policy = el.getAttribute("data-policy-url");
+  if (policy) out.policyUrl = policy;
   const consentMode = el.getAttribute("data-consent-mode");
   if (consentMode != null) {
     out.gtm = { consentMode: consentMode !== "false", dataLayerEvent: DEFAULTS.gtm.dataLayerEvent };

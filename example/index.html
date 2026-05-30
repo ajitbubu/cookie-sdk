@@ -79,28 +79,29 @@
       cookieName: "cc_demo",
       consentVersion: 1,
       expiryDays: 182,
+      policyUrl: "https://example.com/cookie-policy",
       categories: {
         necessary: {
           enabled: true, locked: true,
           cookies: [
-            { name: "cc_demo", provider: "This site", purpose: "Stores your cookie choices", duration: "6 months" },
-            { name: "session_id", provider: "This site", purpose: "Keeps you logged in", duration: "Session" }
+            { name: "cc_demo", provider: "This site", domain: "localhost", purpose: "Stores your cookie choices", duration: "6 months" },
+            { name: "session_id", provider: "This site", domain: "localhost", purpose: "Keeps you logged in", duration: "Session" }
           ]
         },
         analytics: {
           cookies: [
-            { name: "_ga", provider: "Google Analytics", purpose: "Distinguishes users", duration: "2 years" },
-            { name: "_gid", provider: "Google Analytics", purpose: "Distinguishes users", duration: "24 hours" }
+            { name: "_ga", provider: "Google Analytics", domain: "localhost", purpose: "Distinguishes users", duration: "2 years" },
+            { name: "_gid", provider: "Google Analytics", domain: "localhost", purpose: "Distinguishes users", duration: "24 hours" }
           ]
         },
         functional: {
           cookies: [
-            { name: "lang", provider: "This site", purpose: "Remembers your language", duration: "1 year" }
+            { name: "lang", provider: "This site", domain: "localhost", purpose: "Remembers your language", duration: "1 year" }
           ]
         },
         marketing: {
           cookies: [
-            { name: "_fbp", provider: "Meta", purpose: "Ad delivery & measurement", duration: "3 months" }
+            { name: "_fbp", provider: "Meta", domain: ".localhost", purpose: "Ad delivery & measurement", duration: "3 months" }
           ]
         }
       },

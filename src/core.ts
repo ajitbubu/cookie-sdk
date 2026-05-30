@@ -6,6 +6,7 @@ import { createBanner } from "./ui/banner";
 import { createFloatingButton } from "./ui/floating-button";
 import { createModal } from "./ui/modal";
 import { createFocusTrap, type FocusTrap } from "./a11y";
+import { isGpcActive } from "./gpc";
 import type { CategoryState } from "./shared";
 
 const INIT_FLAG = "__cookieConsentInitialized";
@@ -31,6 +32,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
   }
 
   const config = resolveConfig(input);
+  const gpcActive = config.honorGpc && isGpcActive();
   const store: ConsentStore = createConsentStore(config);
   const shadow: ShadowHost = createShadowHost(config.theme);
 
@@ -44,7 +46,8 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
       necessary: true,
       analytics: config.categories.analytics?.enabled ?? false,
       functional: config.categories.functional?.enabled ?? false,
-      marketing: config.categories.marketing?.enabled ?? false,
+      // GPC is a "do not sell/share" opt-out: force marketing off as the default.
+      marketing: gpcActive ? false : (config.categories.marketing?.enabled ?? false),
     };
   }
 
@@ -79,7 +82,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
   function openPreferences() {
     if (modalOverlay) return; // already open
     const current = store.read()?.categories ?? defaultCategories();
-    const modal = createModal(config, current, {
+    const modal = createModal(config, current, gpcActive, {
       onAcceptAll: () => commit(allTrue()),
       onRejectNonEssential: () => commit(essentialOnly()),
       onSave: (cats) => commit(cats),

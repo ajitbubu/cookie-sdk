@@ -24,29 +24,31 @@ const SITE_CONFIG: Partial<CookieConsentConfig> = {
   cookieName: "faceoff_consent",
   consentVersion: 1,
   expiryDays: 182,
+  policyUrl: "https://faceoff.world/cookie-policy",
+  honorGpc: true,
   categories: {
     necessary: {
       enabled: true,
       locked: true,
       cookies: [
-        { name: "faceoff_consent", provider: "faceoff.world", purpose: "Stores your cookie choices", duration: "6 months" },
-        { name: "session", provider: "faceoff.world", purpose: "Keeps you signed in", duration: "Session" },
+        { name: "faceoff_consent", provider: "faceoff.world", domain: "faceoff.world", purpose: "Stores your cookie choices", duration: "6 months" },
+        { name: "session", provider: "faceoff.world", domain: "faceoff.world", purpose: "Keeps you signed in", duration: "Session" },
       ],
     },
     analytics: {
       cookies: [
-        { name: "_ga", provider: "Google Analytics", purpose: "Distinguishes users", duration: "2 years" },
-        { name: "_ga_*", provider: "Google Analytics", purpose: "Persists session state", duration: "2 years" },
+        { name: "_ga", provider: "Google Analytics", domain: "faceoff.world", purpose: "Distinguishes users", duration: "2 years" },
+        { name: "_ga_*", provider: "Google Analytics", domain: "faceoff.world", purpose: "Persists session state", duration: "2 years" },
       ],
     },
     functional: {
       cookies: [
-        { name: "lang", provider: "faceoff.world", purpose: "Remembers your language", duration: "1 year" },
+        { name: "lang", provider: "faceoff.world", domain: "faceoff.world", purpose: "Remembers your language", duration: "1 year" },
       ],
     },
     marketing: {
       cookies: [
-        { name: "_fbp", provider: "Meta", purpose: "Ad delivery & measurement", duration: "3 months" },
+        { name: "_fbp", provider: "Meta", domain: ".faceoff.world", purpose: "Ad delivery & measurement", duration: "3 months" },
       ],
     },
   },

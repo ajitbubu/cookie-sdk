@@ -96,12 +96,16 @@ describe("banner actions", () => {
 });
 
 describe("preferences modal", () => {
-  it("opens from the banner and lists cookie tables", () => {
+  it("opens from the banner; View Cookies drills into the cookie table", () => {
     init(baseConfig);
     clickByText(shadow(), "Preferences");
     expect(shadow().querySelector(".cc-overlay")).toBeTruthy();
-    // analytics cookie rendered as text (never innerHTML)
-    expect(shadow().textContent).toContain("_ga");
+    // Cookies live in the detail view now. Open analytics' detail.
+    const viewLinks = shadow().querySelectorAll<HTMLButtonElement>(".cc-view-link");
+    viewLinks[1].click(); // [0]=necessary, [1]=analytics
+    expect(shadow().querySelector(".cc-table")).toBeTruthy();
+    expect(shadow().textContent).toContain("_ga"); // rendered as text, never innerHTML
+    expect(shadow().textContent).toContain("Back to categories");
   });
 
   it("Save Preferences persists the toggled categories", () => {
@@ -121,14 +125,41 @@ describe("preferences modal", () => {
     const inst = init(baseConfig);
     clickByText(shadow(), "Preferences");
     const overlay = shadow().querySelector(".cc-overlay") as ParentNode;
-    clickByText(overlay, "Reject All"); // scoped to the modal, not the banner
+    clickByText(overlay, "Reject Non-Essential"); // scoped to the modal, not the banner
     expect(inst.getConsent()!.marketing).toBe(false);
   });
 
-  it("locked necessary category renders no toggle, shows 'Always active'", () => {
+  it("locked necessary category shows the 'Always Active' badge, no toggle", () => {
     init(baseConfig);
     clickByText(shadow(), "Preferences");
-    expect(shadow().textContent).toContain("Always active");
+    expect(shadow().textContent).toContain("Always Active");
+    // necessary card has a badge, not a switch
+    const badge = shadow().querySelector(".cc-badge");
+    expect(badge?.textContent).toBe("Always Active");
+  });
+});
+
+describe("Global Privacy Control", () => {
+  function setGpc(value: boolean | undefined) {
+    Object.defineProperty(navigator, "globalPrivacyControl", { value, configurable: true });
+  }
+
+  it("shows the Opt-Out Request Honored banner and defaults marketing off", () => {
+    setGpc(true);
+    init(baseConfig);
+    clickByText(shadow(), "Preferences");
+    expect(shadow().textContent).toContain("Opt-Out Request Honored");
+    // marketing toggle is the last checkbox; should be off under GPC
+    const toggles = Array.from(shadow().querySelectorAll<HTMLInputElement>("input[type=checkbox]"));
+    expect(toggles[toggles.length - 1].checked).toBe(false);
+    setGpc(undefined);
+  });
+
+  it("does not show the honored banner when GPC is absent", () => {
+    setGpc(undefined);
+    init(baseConfig);
+    clickByText(shadow(), "Preferences");
+    expect(shadow().textContent).not.toContain("Opt-Out Request Honored");
   });
 });
 

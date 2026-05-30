@@ -49,9 +49,11 @@ Two script tags. **Order matters.**
       cookieDomain: ".example.com",   // share across subdomains; omit for current host
       consentVersion: 1,              // bump to re-prompt everyone
       expiryDays: 182,
+      policyUrl: "https://example.com/cookie-policy",  // "Read our Cookie Policy" link
+      honorGpc: true,                 // honor the browser Global Privacy Control signal (default true)
       categories: {
         necessary:  { enabled: true, locked: true, cookies: [] },
-        analytics:  { cookies: [{ name: "_ga", provider: "Google", purpose: "Analytics", duration: "2y" }] },
+        analytics:  { cookies: [{ name: "_ga", provider: "Google", domain: "example.com", purpose: "Analytics", duration: "2 years" }] },
         functional: { cookies: [] },
         marketing:  { cookies: [] }
       },
@@ -75,6 +77,26 @@ The bootstrap reads `window.CC_BOOTSTRAP` if set (before it loads):
 <script>window.CC_BOOTSTRAP = { cookieName: "cc_consent", waitForUpdate: 500 };</script>
 <script src=".../cc-bootstrap.global.js"></script>
 ```
+
+## Preferences modal & Global Privacy Control
+
+The preferences modal is a full CMP-style surface:
+
+- **Category cards** with iOS-style **toggle switches**; Strictly Necessary shows an
+  **"Always Active"** badge (locked on, no toggle).
+- **View Cookies** drills into a per-category detail view with a **live search box**,
+  **Export** (CSV download) and **Print** buttons, and a **Cookie · Provider · Domain ·
+  Expiry** table built from your config's `cookies` array (set the `domain` field to
+  populate the Domain column).
+- **Global Privacy Control (GPC):** when `honorGpc` is on (default) and the browser
+  sends a GPC signal (`navigator.globalPrivacyControl === true`), the modal shows a
+  notice paragraph plus a green **"Opt-Out Request Honored"** banner, and marketing /
+  ad-targeting defaults to off — GPC is a recognized opt-out under CCPA/CPRA.
+- **`policyUrl`** renders a "Read our Cookie Policy" link in the modal intro.
+
+Every label (including the GPC notice, column headers, and per-category descriptions)
+is overridable via the `labels` config for i18n. See [example/faceoff.html](example/faceoff.html)
+for a live demo of the modal and the View Cookies detail view.
 
 ## Single-file integration (hand a site one JS file)
 
