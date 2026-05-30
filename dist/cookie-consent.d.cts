@@ -6,6 +6,7 @@ interface ConsentRecord {
     timestamp: string;
     categories: CategoryState;
 }
+type ConsentSignal = "ad_storage" | "ad_user_data" | "ad_personalization" | "analytics_storage" | "functionality_storage" | "personalization_storage" | "security_storage";
 
 interface CookieDef {
     name: string;
@@ -52,6 +53,12 @@ interface Labels {
     categoryNames: Record<CategoryKey, string>;
     categoryDescriptions: Record<CategoryKey, string>;
 }
+type BannerPosition = "bottom" | "top";
+type ButtonPosition = "bottom-left" | "bottom-right" | "top-left" | "top-right";
+interface Position {
+    banner: BannerPosition;
+    button: ButtonPosition;
+}
 interface CookieConsentConfig {
     cookieName: string;
     cookieDomain?: string;
@@ -59,6 +66,7 @@ interface CookieConsentConfig {
     expiryDays: number;
     policyUrl?: string;
     honorGpc: boolean;
+    position: Position;
     categories: Record<CategoryKey, CategoryConfig>;
     gtm: {
         consentMode: boolean;
@@ -76,4 +84,4 @@ interface CookieConsentInstance {
 }
 declare function init(input: Partial<CookieConsentConfig>): CookieConsentInstance;
 
-export { type CategoryKey, type CategoryState, type ConsentRecord, type CookieConsentConfig, type CookieConsentInstance, init };
+export { type BannerPosition, type ButtonPosition, type CategoryConfig, type CategoryKey, type CategoryState, type ConsentRecord, type ConsentSignal, type CookieConsentConfig, type CookieConsentInstance, type CookieDef, type Labels, type Position, init };

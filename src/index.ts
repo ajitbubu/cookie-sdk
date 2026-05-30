@@ -1,9 +1,19 @@
 import { init, type CookieConsentInstance } from "./core";
-import { parseDataAttributes, type CookieConsentConfig } from "./config";
+import { parseDataAttributes } from "./config";
 
 export { init };
-export type { CookieConsentConfig, CookieConsentInstance };
-export type { CategoryKey, CategoryState, ConsentRecord } from "./shared";
+export type { CookieConsentInstance };
+// Public config surface — consumed by the builder/editor to type its forms.
+export type {
+  CookieConsentConfig,
+  CategoryConfig,
+  CookieDef,
+  Labels,
+  Position,
+  BannerPosition,
+  ButtonPosition,
+} from "./config";
+export type { CategoryKey, CategoryState, ConsentRecord, ConsentSignal } from "./shared";
 
 // Auto-init from a script tag carrying `data-auto-init`. Mutually exclusive with
 // a manual init() call — if both are used, init() wins and warns. (Eng-review:
