@@ -1,8 +1,12 @@
 {
-  "name": "cookie-banner-sdk",
+  "name": "@ajitbubu/cookie-banner-sdk",
   "version": "0.1.0",
   "description": "Drop-in cookie consent banner SDK with Google Consent Mode v2 signaling. Shadow-DOM isolated, zero runtime deps.",
   "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist"
   ],
