@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>cookie-banner-sdk — demo</title>
+
+  <!--
+    HOW THIS PAGE WORKS
+    ------------------------------------------------------------------
+    1. A logging gtag/dataLayer stub (below) stands in for Google Tag
+       Manager so you can SEE the Consent Mode v2 calls in the console
+       and in the live panel. On a real site, GTM provides these.
+    2. cc-bootstrap runs synchronously and pushes consent 'default'
+       BEFORE GTM would evaluate tags. Here it runs before the stub
+       logs, so you'll see the default call first.
+    3. The main bundle renders the banner/modal and calls
+       gtag('consent','update', …) when you choose.
+    Open DevTools console to watch the calls. Use the buttons below to
+    reset consent (re-show the banner) or reopen the preferences modal.
+  -->
+
+  <!-- (1) Logging gtag stub — REMOVE on a real site; GTM provides gtag/dataLayer. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    window.__ccLog = [];
+    window.gtag = function () {
+      var args = Array.prototype.slice.call(arguments);
+      window.dataLayer.push(arguments);
+      window.__ccLog.push(args);
+      console.log("[gtag]", ...args);
+      if (window.__renderConsentLog) window.__renderConsentLog();
+    };
+  </script>
+
+  <!-- (2) Tell the bootstrap which cookie to read, then load it ABOVE "GTM". -->
+  <script>
+    window.CC_BOOTSTRAP = { cookieName: "cc_demo" };
+  </script>
+  <script src="../dist/cc-bootstrap.global.js"></script>
+
+  <!-- (On a real site, your GTM container snippet goes HERE, after the bootstrap.) -->
+
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.6; }
+    h1 { margin-bottom: 4px; }
+    .sub { color: #666; margin-top: 0; }
+    .panel { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin: 20px 0; }
+    .panel h2 { font-size: 15px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #666; }
+    pre { background: #f6f6f6; padding: 12px; border-radius: 6px; overflow: auto; font-size: 13px; }
+    .controls button { cursor: pointer; padding: 9px 16px; border: 1px solid #ccc; border-radius: 6px; background: #fff; font-size: 14px; margin-right: 8px; }
+    code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>🍪 cookie-banner-sdk</h1>
+  <p class="sub">Demo page. On first load you'll see the banner. After you choose, only the floating button remains (bottom-left). Reload to confirm consent persists.</p>
+
+  <div class="controls panel">
+    <h2>Controls</h2>
+    <button id="open">Open preferences</button>
+    <button id="reset">Reset consent &amp; reload</button>
+  </div>
+
+  <div class="panel">
+    <h2>Current consent (from onConsent)</h2>
+    <pre id="consent">No choice yet — make one in the banner.</pre>
+  </div>
+
+  <div class="panel">
+    <h2>Consent Mode v2 calls (gtag)</h2>
+    <pre id="log">(waiting…)</pre>
+  </div>
+
+  <!-- (3) Main bundle — renders the UI. Can load anywhere after the bootstrap. -->
+  <script src="../dist/cookie-consent.global.js"></script>
+  <script>
+    var cc = CookieConsent.init({
+      cookieName: "cc_demo",
+      consentVersion: 1,
+      expiryDays: 182,
+      categories: {
+        necessary: {
+          enabled: true, locked: true,
+          cookies: [
+            { name: "cc_demo", provider: "This site", purpose: "Stores your cookie choices", duration: "6 months" },
+            { name: "session_id", provider: "This site", purpose: "Keeps you logged in", duration: "Session" }
+          ]
+        },
+        analytics: {
+          cookies: [
+            { name: "_ga", provider: "Google Analytics", purpose: "Distinguishes users", duration: "2 years" },
+            { name: "_gid", provider: "Google Analytics", purpose: "Distinguishes users", duration: "24 hours" }
+          ]
+        },
+        functional: {
+          cookies: [
+            { name: "lang", provider: "This site", purpose: "Remembers your language", duration: "1 year" }
+          ]
+        },
+        marketing: {
+          cookies: [
+            { name: "_fbp", provider: "Meta", purpose: "Ad delivery & measurement", duration: "3 months" }
+          ]
+        }
+      },
+      gtm: { consentMode: true, dataLayerEvent: "cookie_consent_update" },
+      theme: { "--cc-accent": "#2563eb" },
+      onConsent: function (categories) {
+        document.getElementById("consent").textContent = JSON.stringify(categories, null, 2);
+      }
+    });
+
+    // Wire the demo controls.
+    document.getElementById("open").addEventListener("click", function () {
+      cc.openPreferences();
+    });
+    document.getElementById("reset").addEventListener("click", function () {
+      document.cookie = "cc_demo=; Max-Age=0; Path=/";
+      location.reload();
+    });
+
+    // Render the gtag call log into the panel.
+    window.__renderConsentLog = function () {
+      document.getElementById("log").textContent =
+        (window.__ccLog || []).map(function (a) { return JSON.stringify(a); }).join("\n") || "(none)";
+    };
+    window.__renderConsentLog();
+
+    // If consent already existed at load, reflect it.
+    var existing = cc.getConsent();
+    if (existing) document.getElementById("consent").textContent = JSON.stringify(existing, null, 2);
+  </script>
+</body>
+</html>
