@@ -76,6 +76,53 @@ The bootstrap reads `window.CC_BOOTSTRAP` if set (before it loads):
 <script src=".../cc-bootstrap.global.js"></script>
 ```
 
+## Single-file integration (hand a site one JS file)
+
+When you want to give a website **one JavaScript file and nothing else** — no
+`init()` call, no config for them to write — use the standalone build. The config
+is baked into the file at build time, so the site adds exactly two things:
+
+1. **One `<script>` tag** in the `<head>`, above their GTM snippet.
+2. **One placeholder element** with `id="cookie-settings"` (a footer link) to reopen
+   preferences. (Optional — the floating cookie button appears automatically.)
+
+That's the entire integration:
+
+```html
+<head>
+  <!-- The one file you give them. Place it ABOVE the GTM snippet. -->
+  <script src="https://your-cdn/cookie-consent.standalone.global.js"></script>
+  <!-- ...their GTM snippet here... -->
+</head>
+<body>
+  ...
+  <footer>
+    <a href="#" id="cookie-settings">Cookie settings</a>  <!-- the placeholder id -->
+  </footer>
+</body>
+```
+
+The standalone file self-executes: it pushes the Consent Mode v2 `default`
+synchronously (before GTM), renders the banner on DOM-ready, and wires any element
+with `id="cookie-settings"` to open the preferences modal.
+
+**To produce the file for a specific site:** edit the `SITE_CONFIG` and `TRIGGER_ID`
+block at the top of [`src/standalone.ts`](src/standalone.ts) (cookie name, categories,
+cookie tables, theme), then build:
+
+```bash
+npm run build
+# hand them: dist/cookie-consent.standalone.global.js
+```
+
+A complete working example for faceoff.world is in
+[`example/faceoff.html`](example/faceoff.html) — one script tag + one footer link,
+nothing else. See [`example/README.md`](example/README.md) for the faceoff handoff steps.
+
+Trade-off: a single self-contained file (~15KB) placed above GTM blocks rendering
+slightly more than the tiny 1KB bootstrap of the two-file setup. That's the cost of
+the one-file simplicity; for most sites it's negligible.
+
 ## Category → Consent Mode v2 signals
 
 | Category | Signals |

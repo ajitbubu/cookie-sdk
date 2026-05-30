@@ -20,4 +20,13 @@ export default defineConfig([
     sourcemap: true,
     clean: false,
   },
+  {
+    // Single-file, config-baked build for handing to a site (e.g. faceoff.world).
+    // Self-executing: pushes consent default synchronously, then renders on DOM-ready.
+    entry: { "cookie-consent.standalone": "src/standalone.ts" },
+    format: ["iife"],
+    minify: true,
+    sourcemap: true,
+    clean: false,
+  },
 ]);

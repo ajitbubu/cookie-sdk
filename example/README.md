@@ -103,6 +103,57 @@ own scripts.
 - `instance.getConsent()` — returns the current `{ necessary, analytics, functional, marketing }` or `null`
 - `instance.destroy()` — remove the widget
 
+## Single-file handoff (e.g. faceoff.world)
+
+When you want to give a site **one JS file + one placeholder id, nothing else**, use
+the standalone build. The config is baked in, so the site writes no `init()` and no
+config. Open [`faceoff.html`](faceoff.html) to see it in action — it contains exactly
+what the site adds and nothing more.
+
+### What you do (once, to produce the file)
+
+1. Edit the `SITE_CONFIG` / `TRIGGER_ID` block at the top of
+   [`../src/standalone.ts`](../src/standalone.ts): set the cookie name, the four
+   category cookie tables, and the theme accent for the site.
+2. Build:
+   ```bash
+   npm run build
+   ```
+3. Hand the site the resulting file: **`dist/cookie-consent.standalone.global.js`**
+   (rename to whatever you like, e.g. `faceoff-cookie-consent.js`). Host it on your
+   CDN or let them self-host it.
+
+### What faceoff.world does (the entire integration)
+
+```html
+<head>
+  <!-- (A) the one file, ABOVE their GTM snippet -->
+  <script src="https://your-cdn/faceoff-cookie-consent.js"></script>
+  <!-- ...their GTM container snippet... -->
+</head>
+<body>
+  ...
+  <footer>
+    <!-- (B) the placeholder id — wires this link to open preferences -->
+    <a href="#" id="cookie-settings">Cookie settings</a>
+  </footer>
+</body>
+```
+
+No `init()`, no config, no second script. The file pushes the denied-by-default
+Consent Mode signal synchronously (before GTM), shows the banner on first visit,
+shows the floating button after a choice, and opens preferences when the
+`#cookie-settings` link is clicked. The placeholder is optional — the floating
+button works on its own — but it gives faceoff a tidy footer entry point.
+
+### Try the faceoff demo locally
+
+```bash
+npm run build
+npx serve .
+# open http://localhost:3000/example/faceoff.html
+```
+
 ## Category → Consent Mode v2 signals
 
 | Category | Signals granted when enabled |
