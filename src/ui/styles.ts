@@ -87,8 +87,8 @@ export function buildStyles(theme?: Record<string, string>): string {
   .cc-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .cc-title { display: flex; align-items: center; gap: 10px; color: var(--cc-fg); }
   .cc-title h2 { margin: 0; font-size: 19px; font-weight: 600; }
-  .cc-close { display: flex; align-items: center; gap: 6px; border: none; background: none; color: var(--cc-muted); padding: 6px 8px; min-height: 0; font-weight: 500; }
-  .cc-close:hover { color: var(--cc-fg); }
+  .cc-close { display: flex; align-items: center; justify-content: center; border: none; background: none; color: var(--cc-muted); width: 44px; height: 44px; padding: 0; min-height: 0; border-radius: var(--cc-radius); }
+  .cc-close:hover { color: var(--cc-fg); background: var(--cc-surface); }
   .cc-close-x { font-size: 16px; }
 
   /* ---- GPC notice + honored banner ---- */
