@@ -6,7 +6,7 @@ import { defineConfig } from "tsup";
 export default defineConfig([
   {
     entry: { "cookie-consent": "src/index.ts" },
-    format: ["esm", "iife"],
+    format: ["esm", "iife", "cjs"],
     globalName: "CookieConsent",
     dts: true,
     minify: true,

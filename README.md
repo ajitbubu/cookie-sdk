@@ -28,7 +28,11 @@ pair it with a CMP/consent-record backend.
 
 ## Install
 
-Two script tags. **Order matters.**
+> **Full installation guide:** [INSTALL.md](INSTALL.md) covers every integration path —
+> plain HTML, single-file handoff, data-attribute auto-init, npm/bundlers, React, Next.js,
+> Vue, Angular, WordPress, Shopify, Webflow, self-hosting, theming, i18n, and troubleshooting.
+
+The quick path — two script tags. **Order matters.**
 
 ```html
 <head>

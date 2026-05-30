@@ -6,11 +6,20 @@
   "files": [
     "dist"
   ],
+  "main": "./dist/cookie-consent.cjs",
+  "module": "./dist/cookie-consent.js",
+  "types": "./dist/cookie-consent.d.ts",
+  "unpkg": "./dist/cookie-consent.global.js",
+  "jsdelivr": "./dist/cookie-consent.global.js",
   "exports": {
     ".": {
+      "types": "./dist/cookie-consent.d.ts",
       "import": "./dist/cookie-consent.js",
-      "require": "./dist/cookie-consent.umd.cjs"
-    }
+      "require": "./dist/cookie-consent.cjs"
+    },
+    "./bootstrap": "./dist/cc-bootstrap.global.js",
+    "./standalone": "./dist/cookie-consent.standalone.global.js",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "build": "tsup",
