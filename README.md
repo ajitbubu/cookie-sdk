@@ -62,8 +62,14 @@ The quick path — two script tags. **Order matters.**
         marketing:  { cookies: [] }
       },
       gtm: { consentMode: true, dataLayerEvent: "cookie_consent_update" },
+      position: { banner: "bottom", button: "bottom-left" }, // banner: top|bottom; button corner
       labels: { acceptAll: "Accept All" },   // i18n: override any label
-      theme: { "--cc-accent": "#10b981" },   // theming: only --cc-* vars
+      theme: {                                // theming: only --cc-* vars
+        "--cc-accent": "#10b981",
+        "--cc-font-size": "14px",             // base body text size
+        "--cc-heading-color": "#111827",      // modal/section heading color
+        "--cc-heading-size": "19px"           // modal title size
+      },
       onConsent: (categories) => { /* fired on every save (use this if you have no GTM) */ }
     });
   </script>

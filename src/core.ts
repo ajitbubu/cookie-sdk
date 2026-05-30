@@ -66,6 +66,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
       onRejectAll: () => commit(essentialOnly()),
       onPreferences: openPreferences,
     });
+    banner.classList.add(`cc-pos-${config.position.banner}`);
     shadow.root.appendChild(banner);
   }
   function closeBanner() {
@@ -76,6 +77,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
   function showFab() {
     if (fab) return;
     fab = createFloatingButton(config.labels, openPreferences);
+    fab.classList.add(`cc-fab-${config.position.button}`);
     shadow.root.appendChild(fab);
   }
 

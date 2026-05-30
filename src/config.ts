@@ -43,6 +43,14 @@ export interface Labels {
   categoryDescriptions: Record<CategoryKey, string>;
 }
 
+export type BannerPosition = "bottom" | "top";
+export type ButtonPosition = "bottom-left" | "bottom-right" | "top-left" | "top-right";
+
+export interface Position {
+  banner: BannerPosition; // default "bottom"
+  button: ButtonPosition; // floating cookie button corner, default "bottom-left"
+}
+
 export interface CookieConsentConfig {
   cookieName: string;
   cookieDomain?: string; // share across subdomains; defaults to current host
@@ -50,6 +58,7 @@ export interface CookieConsentConfig {
   expiryDays: number;
   policyUrl?: string; // "Read our Cookie Policy" link target
   honorGpc: boolean; // honor Global Privacy Control signal
+  position: Position; // banner edge + floating-button corner
   categories: Record<CategoryKey, CategoryConfig>;
   gtm: { consentMode: boolean; dataLayerEvent: string };
   labels: Labels;
@@ -131,6 +140,8 @@ export function resolveConfig(input: Partial<CookieConsentConfig>): CookieConsen
     enabled: true,
     locked: true,
   };
+  // Accept a partial position ({ banner } or { button } alone) and fill defaults.
+  const pos = (input.position ?? {}) as Partial<Position>;
   return {
     cookieName: input.cookieName ?? DEFAULTS.cookieName,
     cookieDomain: input.cookieDomain,
@@ -138,6 +149,7 @@ export function resolveConfig(input: Partial<CookieConsentConfig>): CookieConsen
     expiryDays: input.expiryDays ?? DEFAULTS.expiryDays,
     policyUrl: input.policyUrl,
     honorGpc: input.honorGpc ?? DEFAULTS.honorGpc,
+    position: { banner: pos.banner ?? "bottom", button: pos.button ?? "bottom-left" },
     categories,
     gtm: { ...DEFAULTS.gtm, ...(input.gtm || {}) },
     labels: {
@@ -177,6 +189,18 @@ export function parseDataAttributes(el: HTMLElement): Partial<CookieConsentConfi
   const consentMode = el.getAttribute("data-consent-mode");
   if (consentMode != null) {
     out.gtm = { consentMode: consentMode !== "false", dataLayerEvent: DEFAULTS.gtm.dataLayerEvent };
+  }
+  const bannerPos = el.getAttribute("data-banner-position");
+  const buttonPos = el.getAttribute("data-button-position");
+  if (bannerPos === "top" || bannerPos === "bottom" || buttonPos) {
+    out.position = {} as Position;
+    if (bannerPos === "top" || bannerPos === "bottom") out.position.banner = bannerPos;
+    if (
+      buttonPos === "bottom-left" || buttonPos === "bottom-right" ||
+      buttonPos === "top-left" || buttonPos === "top-right"
+    ) {
+      out.position.button = buttonPos;
+    }
   }
   // data-attr form has no cookie definitions; categories default to empty tables.
   out.categories = defaultCategories();

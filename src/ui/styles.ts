@@ -25,6 +25,9 @@ export function buildStyles(theme?: Record<string, string>): string {
     --cc-success-border: #bbf7d0;
     --cc-radius: 10px;
     --cc-font: system-ui, -apple-system, sans-serif;
+    --cc-font-size: 14px;
+    --cc-heading-color: var(--cc-fg);
+    --cc-heading-size: 19px;
     --cc-z: 2147483647;
     ${overrides}
     all: initial;
@@ -33,6 +36,7 @@ export function buildStyles(theme?: Record<string, string>): string {
   /* [hidden] must beat class rules that set display (e.g. .cc-modal-actions{display:flex}). */
   [hidden] { display: none !important; }
   @keyframes cc-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes cc-slide-down { from { transform: translateY(-100%); } to { transform: translateY(0); } }
   @keyframes cc-fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes cc-pop-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 
@@ -46,7 +50,14 @@ export function buildStyles(theme?: Record<string, string>): string {
     flex-wrap: wrap; justify-content: space-between;
     box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
   }
-  .cc-banner p { margin: 0; flex: 1 1 280px; font-size: 14px; line-height: 1.5; }
+  /* Position modifier: top vs default bottom. */
+  .cc-banner.cc-pos-top {
+    bottom: auto; top: 0;
+    border-top: none; border-bottom: 1px solid var(--cc-border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    animation: cc-slide-down 0.28s ease-out;
+  }
+  .cc-banner p { margin: 0; flex: 1 1 280px; font-size: var(--cc-font-size); line-height: 1.5; }
   .cc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   /* ---- Buttons ---- */
@@ -64,12 +75,17 @@ export function buildStyles(theme?: Record<string, string>): string {
 
   /* ---- Floating button ---- */
   .cc-fab {
-    position: fixed; bottom: 16px; left: 16px; z-index: var(--cc-z);
+    position: fixed; z-index: var(--cc-z);
     width: 46px; height: 46px; border-radius: 50%; padding: 0;
     display: flex; align-items: center; justify-content: center;
     background: var(--cc-bg); color: var(--cc-fg);
     box-shadow: 0 2px 10px rgba(0,0,0,0.18);
   }
+  /* Corner placement (default bottom-left). */
+  .cc-fab.cc-fab-bottom-left  { bottom: 16px; left: 16px; }
+  .cc-fab.cc-fab-bottom-right { bottom: 16px; right: 16px; }
+  .cc-fab.cc-fab-top-left     { top: 16px; left: 16px; }
+  .cc-fab.cc-fab-top-right    { top: 16px; right: 16px; }
 
   /* ---- Modal shell ---- */
   .cc-overlay {
@@ -86,7 +102,7 @@ export function buildStyles(theme?: Record<string, string>): string {
   }
   .cc-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .cc-title { display: flex; align-items: center; gap: 10px; color: var(--cc-fg); }
-  .cc-title h2 { margin: 0; font-size: 19px; font-weight: 600; }
+  .cc-title h2 { margin: 0; font-size: var(--cc-heading-size); font-weight: 600; color: var(--cc-heading-color); }
   .cc-close { display: flex; align-items: center; justify-content: center; border: none; background: none; color: var(--cc-muted); width: 44px; height: 44px; padding: 0; min-height: 0; border-radius: var(--cc-radius); }
   .cc-close:hover { color: var(--cc-fg); background: var(--cc-surface); }
   .cc-close-x { font-size: 16px; }
@@ -104,7 +120,7 @@ export function buildStyles(theme?: Record<string, string>): string {
   /* ---- Category cards ---- */
   .cc-card { border: 1px solid var(--cc-border); border-radius: var(--cc-radius); padding: 16px; margin-bottom: 14px; background: var(--cc-surface); }
   .cc-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
-  .cc-card-head h3 { margin: 0; font-size: 15.5px; font-weight: 600; }
+  .cc-card-head h3 { margin: 0; font-size: 15.5px; font-weight: 600; color: var(--cc-heading-color); }
   .cc-card-desc { margin: 0 0 10px; font-size: 13.5px; line-height: 1.55; color: var(--cc-muted); }
   .cc-badge { font-size: 12px; font-weight: 600; color: var(--cc-success); background: var(--cc-success-bg); border: 1px solid var(--cc-success-border); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
   .cc-view-link { border: none; background: none; color: var(--cc-accent); padding: 0; min-height: 0; font-size: 13.5px; font-weight: 500; }
