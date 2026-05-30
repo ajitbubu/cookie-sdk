@@ -56,8 +56,15 @@ export function createModal(
     const expand = document.createElement("button");
     expand.type = "button";
     expand.className = "cc-toggle-expand";
-    expand.textContent = config.labels.categoryNames[key];
     expand.setAttribute("aria-expanded", "false");
+    // Rotating chevron affordance (CSS rotates it when aria-expanded=true).
+    const chevron = document.createElement("span");
+    chevron.className = "cc-chevron";
+    chevron.setAttribute("aria-hidden", "true");
+    chevron.textContent = "›"; // ›
+    const nameLabel = document.createElement("span");
+    nameLabel.textContent = config.labels.categoryNames[key];
+    expand.append(chevron, nameLabel);
     expand.addEventListener("click", () => {
       const open = body.hidden;
       body.hidden = !open;
@@ -115,10 +122,12 @@ export function createModal(
 
   const actions = document.createElement("div");
   actions.className = "cc-modal-actions";
+  // Accept All and Reject Non-Essential get equal (neutral) weight — neither is
+  // easier. Save Preferences is the considered choice, so it's the primary anchor.
   actions.append(
     actionButton(config.labels.rejectNonEssential, cb.onRejectNonEssential),
-    actionButton(config.labels.savePreferences, () => cb.onSave(readToggles())),
-    actionButton(config.labels.acceptAll, cb.onAcceptAll, "cc-primary"),
+    actionButton(config.labels.acceptAll, cb.onAcceptAll),
+    actionButton(config.labels.savePreferences, () => cb.onSave(readToggles()), "cc-primary"),
   );
   dialog.appendChild(actions);
 

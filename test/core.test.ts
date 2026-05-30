@@ -117,10 +117,11 @@ describe("preferences modal", () => {
     expect(shadow().querySelector(".cc-overlay")).toBeFalsy();
   });
 
-  it("Reject Non-Essential from the modal keeps only necessary", () => {
+  it("Reject (modal) keeps only necessary", () => {
     const inst = init(baseConfig);
     clickByText(shadow(), "Preferences");
-    clickByText(shadow(), "Reject Non-Essential");
+    const overlay = shadow().querySelector(".cc-overlay") as ParentNode;
+    clickByText(overlay, "Reject All"); // scoped to the modal, not the banner
     expect(inst.getConsent()!.marketing).toBe(false);
   });
 

@@ -45,7 +45,7 @@ export const DEFAULT_LABELS: Labels = {
   rejectAll: "Reject All",
   preferences: "Preferences",
   modalTitle: "Cookie Preferences",
-  rejectNonEssential: "Reject Non-Essential",
+  rejectNonEssential: "Reject All", // necessary cookies always stay on; "Reject All" matches the banner
   savePreferences: "Save Preferences",
   reopenButton: "Cookie settings",
   categoryNames: {

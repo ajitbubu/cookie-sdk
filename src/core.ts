@@ -87,6 +87,11 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     });
     modalOverlay = modal.overlay;
     shadow.root.appendChild(modalOverlay);
+    // Hide the backdrop banner from AT/keyboard while the modal is up.
+    if (banner) {
+      banner.setAttribute("inert", "");
+      banner.setAttribute("aria-hidden", "true");
+    }
     trap = createFocusTrap(modal.dialog, shadow.root, closeModal);
   }
   function closeModal() {
@@ -94,6 +99,10 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     trap = null;
     modalOverlay?.remove();
     modalOverlay = null;
+    if (banner) {
+      banner.removeAttribute("inert");
+      banner.removeAttribute("aria-hidden");
+    }
   }
 
   // Decide banner vs button on load (eng-review: re-prompt precedence in needsPrompt).

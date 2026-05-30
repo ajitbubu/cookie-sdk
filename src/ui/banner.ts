@@ -22,8 +22,10 @@ export function createBanner(labels: Labels, cb: BannerCallbacks): HTMLElement {
   const actions = document.createElement("div");
   actions.className = "cc-actions";
 
-  const prefs = button(labels.preferences, cb.onPreferences);
-  const reject = button(labels.rejectAll, cb.onRejectAll);
+  // Equal visual weight for Accept and Reject (consent fairness — neither is
+  // easier to click than the other). Preferences is a quieter tertiary action.
+  const prefs = button(labels.preferences, cb.onPreferences, "cc-tertiary");
+  const reject = button(labels.rejectAll, cb.onRejectAll, "cc-primary");
   const accept = button(labels.acceptAll, cb.onAcceptAll, "cc-primary");
 
   actions.append(prefs, reject, accept);
