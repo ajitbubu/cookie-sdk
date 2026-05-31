@@ -7,9 +7,9 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 function cookieIcon(): SVGSVGElement {
   const svg = document.createElementNS(SVG_NS, "svg");
   svg.setAttribute("viewBox", "0 0 24 24");
-  svg.setAttribute("width", "22");
-  svg.setAttribute("height", "22");
-  svg.setAttribute("fill", "none");
+  svg.setAttribute("width", "37");
+  svg.setAttribute("height", "37");
+  svg.setAttribute("fill", "#DB2927");
   svg.setAttribute("stroke", "currentColor");
   svg.setAttribute("stroke-width", "1.8");
   svg.setAttribute("aria-hidden", "true");

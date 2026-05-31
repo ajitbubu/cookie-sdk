@@ -6,8 +6,8 @@
 export function buildStyles(theme?: Record<string, string>): string {
   const overrides = theme
     ? Object.entries(theme)
-        .map(([k, v]) => `${k.startsWith("--cc-") ? k : `--cc-${k}`}: ${v};`)
-        .join("\n    ")
+      .map(([k, v]) => `${k.startsWith("--cc-") ? k : `--cc-${k}`}: ${v};`)
+      .join("\n    ")
     : "";
 
   return `
@@ -18,7 +18,7 @@ export function buildStyles(theme?: Record<string, string>): string {
     --cc-muted: #6b7280;
     --cc-border: #e5e7eb;
     --cc-surface: #f9fafb;
-    --cc-accent: #2563eb;
+    --cc-accent: #DB2927;
     --cc-accent-fg: #ffffff;
     --cc-success: #16a34a;
     --cc-success-bg: #f0fdf4;
@@ -66,7 +66,7 @@ export function buildStyles(theme?: Record<string, string>): string {
   button {
     cursor: pointer; border: 1px solid var(--cc-border); border-radius: var(--cc-radius);
     padding: 11px 18px; min-height: 44px; font-size: 14px; font-weight: 500;
-    background: var(--cc-bg); color: var(--cc-fg); transition: background 0.12s, border-color 0.12s;
+    background: var(--cc-accent); color: var(--cc-accent-fg); transition: background 0.12s, border-color 0.12s;
   }
   button.cc-primary { background: var(--cc-accent); color: var(--cc-accent-fg); border-color: var(--cc-accent); }
   button.cc-primary:hover { filter: brightness(0.94); }

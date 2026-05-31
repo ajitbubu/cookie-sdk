@@ -68,7 +68,7 @@ export interface CookieConsentConfig {
 
 export const DEFAULT_LABELS: Labels = {
   bannerText:
-    "We use cookies to improve your experience. Choose which categories to allow.",
+    "Privacy is our priority. We do not sell or otherwise share personal information for money or anything of value. We use strictly necessary cookies to enable site functionality and improve the performance of our website. We also store cookies to personalize the website content and to serve more relevant content to you. For more information, please visit our Privacy Policy or Cookie Policy.",
   acceptAll: "Accept All",
   rejectAll: "Reject All",
   preferences: "Preferences",
@@ -208,3 +208,5 @@ export function parseDataAttributes(el: HTMLElement): Partial<CookieConsentConfi
 }
 
 export { CATEGORY_KEYS };
+
+

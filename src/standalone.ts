@@ -24,7 +24,7 @@ const SITE_CONFIG: Partial<CookieConsentConfig> = {
   cookieName: "faceoff_consent",
   consentVersion: 1,
   expiryDays: 182,
-  policyUrl: "https://faceoff.world/cookie-policy",
+  policyUrl: "https://faceoff.world/page/cookie-preferences",
   honorGpc: true,
   categories: {
     necessary: {
@@ -53,7 +53,7 @@ const SITE_CONFIG: Partial<CookieConsentConfig> = {
     },
   },
   gtm: { consentMode: true, dataLayerEvent: "cookie_consent_update" },
-  theme: { "--cc-accent": "#2563eb" },
+  theme: { "--cc-accent": "#DB2927" },
 };
 // ----- END PER-SITE BLOCK ---------------------------------------------------
 

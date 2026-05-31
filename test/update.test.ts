@@ -14,6 +14,18 @@ const cfg = (text: string) => ({
   labels: { bannerText: text } as never,
 });
 
+// Read the effective CSS regardless of how it's mounted: a constructable
+// stylesheet (adoptedStyleSheets) when supported, else the <style> fallback.
+function shadowCss(root: ShadowRoot): string {
+  const adopted = root.adoptedStyleSheets;
+  if (adopted && adopted.length) {
+    return Array.from(adopted)
+      .flatMap((s) => Array.from(s.cssRules).map((r) => r.cssText))
+      .join("\n");
+  }
+  return root.querySelector("style")?.textContent ?? "";
+}
+
 describe("instance.update()", () => {
   it("re-renders new labels without remounting the shadow host", () => {
     const inst = init(cfg("AAA"));
@@ -29,10 +41,10 @@ describe("instance.update()", () => {
   it("re-themes live by rewriting the injected styles", () => {
     const inst = init({ ...cfg("x"), theme: { "--cc-accent": "#111111" } });
     const root = document.querySelector("[data-cookie-consent-root]")!.shadowRoot!;
-    expect(root.querySelector("style")!.textContent).toContain("#111111");
+    expect(shadowCss(root)).toContain("#111111");
     inst.update({ ...cfg("x"), theme: { "--cc-accent": "#abcdef" } });
-    expect(root.querySelector("style")!.textContent).toContain("#abcdef");
-    expect(root.querySelector("style")!.textContent).not.toContain("#111111");
+    expect(shadowCss(root)).toContain("#abcdef");
+    expect(shadowCss(root)).not.toContain("#111111");
   });
 
   it("rebuilt banner carries the no-animation class on update", () => {
