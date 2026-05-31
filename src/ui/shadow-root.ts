@@ -3,6 +3,7 @@ import { buildStyles } from "./styles";
 export interface ShadowHost {
   host: HTMLElement;
   root: ShadowRoot;
+  setTheme(theme?: Record<string, string>): void;
   destroy(): void;
 }
 
@@ -19,6 +20,11 @@ export function createShadowHost(theme?: Record<string, string>): ShadowHost {
   return {
     host,
     root,
+    // Live theme swap — rewrite the injected styles in place so update() can
+    // re-theme without tearing down and remounting the host (no flicker).
+    setTheme(next?: Record<string, string>) {
+      style.textContent = buildStyles(next);
+    },
     destroy() {
       host.remove();
     },

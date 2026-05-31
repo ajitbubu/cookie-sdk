@@ -81,6 +81,12 @@ interface CookieConsentInstance {
     destroy(): void;
     openPreferences(): void;
     getConsent(): CategoryState | null;
+    /**
+     * Re-render with a new config without tearing down the shadow host. The theme
+     * swaps live (CSS variables), the banner/modal/button DOM is rebuilt in place,
+     * and the slide-in animation does not replay. Cheap enough for live editing.
+     */
+    update(config: Partial<CookieConsentConfig>): void;
 }
 declare function init(input: Partial<CookieConsentConfig>): CookieConsentInstance;
 

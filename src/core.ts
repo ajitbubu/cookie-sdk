@@ -15,6 +15,12 @@ export interface CookieConsentInstance {
   destroy(): void;
   openPreferences(): void;
   getConsent(): CategoryState | null;
+  /**
+   * Re-render with a new config without tearing down the shadow host. The theme
+   * swaps live (CSS variables), the banner/modal/button DOM is rebuilt in place,
+   * and the slide-in animation does not replay. Cheap enough for live editing.
+   */
+  update(config: Partial<CookieConsentConfig>): void;
 }
 
 // Theme variables the SDK actually consumes. A theme key outside this set (after
@@ -72,10 +78,10 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     return w[INIT_FLAG] as CookieConsentInstance;
   }
 
-  const config = resolveConfig(input);
+  let config = resolveConfig(input);
   warnMisconfig(input, config);
-  const gpcActive = config.honorGpc && isGpcActive();
-  const store: ConsentStore = createConsentStore(config);
+  let gpcActive = config.honorGpc && isGpcActive();
+  let store: ConsentStore = createConsentStore(config);
   const shadow: ShadowHost = createShadowHost(config.theme);
 
   let banner: HTMLElement | null = null;
@@ -101,7 +107,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     showFab();
   }
 
-  function showBanner() {
+  function showBanner(animate = true) {
     if (banner) return;
     banner = createBanner(config.labels, {
       onAcceptAll: () => commit(allTrue()),
@@ -109,6 +115,8 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
       onPreferences: openPreferences,
     });
     banner.classList.add(`cc-pos-${config.position.banner}`);
+    // update() re-renders should not replay the slide-in animation each keystroke.
+    if (!animate) banner.classList.add("cc-no-anim");
     shadow.root.appendChild(banner);
   }
   function closeBanner() {
@@ -159,6 +167,21 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     showFab();
   }
 
+  function update(nextInput: Partial<CookieConsentConfig>) {
+    config = resolveConfig(nextInput);
+    gpcActive = config.honorGpc && isGpcActive();
+    store = createConsentStore(config);
+    shadow.setTheme(config.theme); // live re-theme, no host remount
+    const modalWasOpen = !!modalOverlay;
+    closeModal();
+    closeBanner();
+    fab?.remove();
+    fab = null;
+    if (store.needsPrompt()) showBanner(false); // no animation replay on update
+    else showFab();
+    if (modalWasOpen) openPreferences();
+  }
+
   const instance: CookieConsentInstance = {
     destroy() {
       closeModal();
@@ -169,6 +192,7 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
     getConsent() {
       return store.read()?.categories ?? null;
     },
+    update,
   };
   w[INIT_FLAG] = instance;
   return instance;

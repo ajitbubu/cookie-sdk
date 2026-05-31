@@ -35,6 +35,8 @@ export function buildStyles(theme?: Record<string, string>): string {
   * { box-sizing: border-box; font-family: var(--cc-font); }
   /* [hidden] must beat class rules that set display (e.g. .cc-modal-actions{display:flex}). */
   [hidden] { display: none !important; }
+  /* Suppress entrance animation on update() re-renders (live editing). */
+  .cc-no-anim { animation: none !important; }
   @keyframes cc-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
   @keyframes cc-slide-down { from { transform: translateY(-100%); } to { transform: translateY(0); } }
   @keyframes cc-fade-in { from { opacity: 0; } to { opacity: 1; } }
