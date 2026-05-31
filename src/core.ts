@@ -17,6 +17,44 @@ export interface CookieConsentInstance {
   getConsent(): CategoryState | null;
 }
 
+// Theme variables the SDK actually consumes. A theme key outside this set (after
+// --cc- normalization) is almost always a typo — warn so it's not silently ignored.
+const KNOWN_THEME_VARS = new Set([
+  "--cc-bg", "--cc-fg", "--cc-muted", "--cc-border", "--cc-surface",
+  "--cc-accent", "--cc-accent-fg", "--cc-success", "--cc-success-bg",
+  "--cc-success-border", "--cc-radius", "--cc-font", "--cc-font-size",
+  "--cc-heading-color", "--cc-heading-size", "--cc-z",
+]);
+
+function warn(msg: string): void {
+  // eslint-disable-next-line no-console
+  console.warn(`[cookie-banner-sdk] ${msg} See https://github.com/ajitbubu/cookie-sdk#configuration`);
+}
+
+// DX: surface the common paste/config mistakes loudly-but-non-fatally so an
+// integrator who mis-pastes gets a clear pointer instead of a silently-wrong banner.
+function warnMisconfig(
+  input: Partial<CookieConsentConfig>,
+  config: CookieConsentConfig,
+): void {
+  // 1. No optional categories defined → the preferences modal will be near-empty.
+  const optional = (["analytics", "functional", "marketing"] as const).filter(
+    (k) => (config.categories[k]?.cookies?.length ?? 0) > 0,
+  );
+  if (!input.categories || optional.length === 0) {
+    warn(
+      "no optional cookie categories are configured — the preferences modal will only show 'Strictly Necessary'. Pass `categories` with the cookies your site sets.",
+    );
+  }
+  // 2. Unknown theme variables (typos) — normalize like buildStyles does.
+  for (const key of Object.keys(config.theme ?? {})) {
+    const norm = key.startsWith("--cc-") ? key : `--cc-${key.replace(/^--/, "")}`;
+    if (!KNOWN_THEME_VARS.has(norm)) {
+      warn(`theme key "${key}" is not a recognized --cc-* variable and will have no effect.`);
+    }
+  }
+}
+
 function allTrue(): CategoryState {
   return { necessary: true, analytics: true, functional: true, marketing: true };
 }
@@ -28,10 +66,14 @@ export function init(input: Partial<CookieConsentConfig>): CookieConsentInstance
   // SPA / double-include guard (eng-review decision: __initialized).
   const w = window as unknown as Record<string, unknown>;
   if (w[INIT_FLAG]) {
+    warn(
+      "init() called more than once — ignoring this call and returning the existing instance. Call destroy() first if you mean to re-initialize.",
+    );
     return w[INIT_FLAG] as CookieConsentInstance;
   }
 
   const config = resolveConfig(input);
+  warnMisconfig(input, config);
   const gpcActive = config.honorGpc && isGpcActive();
   const store: ConsentStore = createConsentStore(config);
   const shadow: ShadowHost = createShadowHost(config.theme);
