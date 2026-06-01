@@ -9,12 +9,50 @@
 
     <!-- (A) The single file faceoff.world adds, ABOVE their GTM snippet. -->
     <script src="../dist/cookie-consent.standalone.global.js"></script>
+    <!-- faceoff's GTM container snippet would go here, after the file above. -->
+    <style>
+     .cookie-settings-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #222;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cookie-settings-btn:hover {
+  background: #f7f7f7;
+}
+    </style>
 </head>
 
 <body>
     <h1>Vanilla HTML Test Page</h1>
     <p>This is a minimal static HTML page (no frameworks).</p>
-
+<button class="cookie-settings-btn" aria-label="Cookie settings">
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 64 64"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
+    <circle cx="32" cy="32" r="26" fill="#D89A42"/>
+    <path d="M51.5 22.5C45 22 40 17 39.5 10.5C37 9.7 34.5 9.3 32 9.3C19.5 9.3 9.3 19.5 9.3 32C9.3 44.5 19.5 54.7 32 54.7C44.5 54.7 54.7 44.5 54.7 32C54.7 28.6 53.9 25.4 52.5 22.5H51.5Z" fill="#E5AE5B"/>
+    <circle cx="24" cy="22" r="4" fill="#5B2E16"/>
+    <circle cx="38" cy="30" r="5" fill="#5B2E16"/>
+    <circle cx="25" cy="42" r="5" fill="#5B2E16"/>
+    <circle cx="44" cy="44" r="3" fill="#5B2E16"/>
+    <circle cx="17" cy="32" r="3" fill="#5B2E16"/>
+    <circle cx="34" cy="17" r="2.5" fill="#5B2E16"/>
+  </svg>
+  Cookie Settings
+</button>
 
     <footer>
         <!-- (B) The placeholder id. The script wires this to open preferences. -->

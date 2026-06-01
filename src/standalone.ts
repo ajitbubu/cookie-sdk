@@ -53,7 +53,7 @@ const SITE_CONFIG: Partial<CookieConsentConfig> = {
     },
   },
   gtm: { consentMode: true, dataLayerEvent: "cookie_consent_update" },
-  theme: { "--cc-accent": "#DB2927" },
+  theme: { "--cc-accent": "#e02424" },
 };
 // ----- END PER-SITE BLOCK ---------------------------------------------------
 

@@ -9,7 +9,7 @@ function cookieIcon(): SVGSVGElement {
   svg.setAttribute("viewBox", "0 0 24 24");
   svg.setAttribute("width", "37");
   svg.setAttribute("height", "37");
-  svg.setAttribute("fill", "#DB2927");
+  svg.setAttribute("fill", "#e02424");
   svg.setAttribute("stroke", "currentColor");
   svg.setAttribute("stroke-width", "1.8");
   svg.setAttribute("aria-hidden", "true");

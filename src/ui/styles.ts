@@ -18,7 +18,7 @@ export function buildStyles(theme?: Record<string, string>): string {
     --cc-muted: #6b7280;
     --cc-border: #e5e7eb;
     --cc-surface: #f9fafb;
-    --cc-accent: #DB2927;
+    --cc-accent: #e02424;
     --cc-accent-fg: #ffffff;
     --cc-success: #16a34a;
     --cc-success-bg: #f0fdf4;

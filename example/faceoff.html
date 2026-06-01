@@ -1,44 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>faceoff.world — single-file integration demo</title>
+  <meta charset="UTF-8" />
+  <title>Cookie Consent Test</title>
 
-  <!--
-    THIS IS EXACTLY WHAT faceoff.world ADDS — nothing else:
-      (A) the one JavaScript file, placed in <head> above their GTM snippet
-      (B) a placeholder element with id="cookie-settings" (a footer link)
-    No init(), no config — the config is baked into the file.
+<!--<script src="https://cdn.jsdelivr.net/gh/ajitbubu/cookie-sdk@main/dist/cookie-consent.faceoff.global.js"></script> -->
+<script src="../dist/cookie-consent.standalone.global.js"></script>
 
-    (The gtag stub below only exists so this demo can show the Consent Mode
-     calls. On the real site, faceoff's GTM container provides gtag/dataLayer.)
-  -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { console.log("[gtag]", ...arguments); window.dataLayer.push(arguments); };
-  </script>
-
-  <!-- (A) The single file faceoff.world adds, ABOVE their GTM snippet. -->
-  <script src="../dist/cookie-consent.standalone.global.js"></script>
-
-  <!-- faceoff's GTM container snippet would go here, after the file above. -->
-
-  <style>
-    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; }
-    footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
-    a { color: #DB2927; }
-  </style>
 </head>
 <body>
-  <h1>faceoff.world</h1>
-  <p>Pretend this is the faceoff.world homepage. On first visit the consent banner
-  appears. After you choose, only the floating cookie button (bottom-left) stays.
-  Click "Cookie settings" in the footer to reopen preferences.</p>
 
-  <footer>
-    <!-- (B) The placeholder id. The script wires this to open preferences. -->
-    © faceoff.world · <a href="#" id="cookie-settings">Cookie settings</a>
-  </footer>
+  <h1>My Website</h1>
+  <p>Welcome to my website. Please accept cookies to continue.</p>
 </body>
 </html>
