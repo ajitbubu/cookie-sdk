@@ -23,6 +23,7 @@
     },
     "./bootstrap": "./dist/cc-bootstrap.global.js",
     "./standalone": "./dist/cookie-consent.standalone.global.js",
+    "./faceoff": "./dist/cookie-consent.faceoff.global.js",
     "./dist/*": "./dist/*"
   },
   "scripts": {

@@ -31,4 +31,13 @@ export default defineConfig([
     sourcemap: false,
     clean: false,
   },
+  {
+    // faceoff.world hand-off bundle: identical to the standalone build above,
+    // emitted under its own filename so the site can pin cookie-consent.faceoff.global.js.
+    entry: { "cookie-consent.faceoff": "src/standalone.ts" },
+    format: ["iife"],
+    minify: true,
+    sourcemap: false,
+    clean: false,
+  },
 ]);
