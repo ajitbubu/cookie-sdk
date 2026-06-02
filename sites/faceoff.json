@@ -1,0 +1,43 @@
+{
+  "id": "faceoff",
+  "label": "faceoff.world",
+  "triggerId": "cookie-settings",
+  "config": {
+    "cookieName": "faceoff_consent",
+    "consentVersion": 1,
+    "expiryDays": 182,
+    "policyUrl": "https://faceoff.world/page/cookie-preferences",
+    "honorGpc": true,
+    "labels": {
+      "bannerText": "Privacy is our priority. We do not sell or otherwise share personal information for money or anything of value. We use strictly necessary cookies to enable site functionality and improve the performance of our website. We also store cookies to personalize the website content and to serve more relevant content to you. For more information, please visit our Privacy Policy or Cookie Policy."
+    },
+    "theme": { "--cc-accent": "#DB2927" },
+    "gtm": { "consentMode": true, "dataLayerEvent": "cookie_consent_update" },
+    "categories": {
+      "necessary": {
+        "enabled": true,
+        "locked": true,
+        "cookies": [
+          { "name": "faceoff_consent", "provider": "faceoff.world", "domain": "faceoff.world", "purpose": "Stores your cookie choices", "duration": "6 months" },
+          { "name": "session", "provider": "faceoff.world", "domain": "faceoff.world", "purpose": "Keeps you signed in", "duration": "Session" }
+        ]
+      },
+      "analytics": {
+        "cookies": [
+          { "name": "_ga", "provider": "Google Analytics", "domain": "faceoff.world", "purpose": "Distinguishes users", "duration": "2 years" },
+          { "name": "_ga_*", "provider": "Google Analytics", "domain": "faceoff.world", "purpose": "Persists session state", "duration": "2 years" }
+        ]
+      },
+      "functional": {
+        "cookies": [
+          { "name": "lang", "provider": "faceoff.world", "domain": "faceoff.world", "purpose": "Remembers your language", "duration": "1 year" }
+        ]
+      },
+      "marketing": {
+        "cookies": [
+          { "name": "_fbp", "provider": "Meta", "domain": ".faceoff.world", "purpose": "Ad delivery & measurement", "duration": "3 months" }
+        ]
+      }
+    }
+  }
+}

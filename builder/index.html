@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cookie Banner Builder</title>
+<style>
+  :root { --accent: #DB2927; --bg:#f6f7f9; --card:#fff; --line:#e3e6ea; --ink:#1a1d21; --muted:#6b7280; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:var(--bg); }
+  header { background:var(--ink); color:#fff; padding:14px 20px; display:flex; align-items:center; gap:12px; }
+  header h1 { font-size:16px; margin:0; font-weight:600; }
+  header .dot { width:14px; height:14px; border-radius:50%; background:var(--accent); }
+  .layout { display:flex; min-height:calc(100vh - 50px); }
+  aside { width:220px; border-right:1px solid var(--line); background:var(--card); padding:12px; }
+  aside h2 { font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:8px 4px; }
+  .site-btn { display:block; width:100%; text-align:left; border:1px solid transparent; background:none; padding:8px 10px; border-radius:8px; cursor:pointer; color:var(--ink); }
+  .site-btn:hover { background:var(--bg); }
+  .site-btn.active { background:#fdecec; border-color:#f6caca; color:var(--accent); font-weight:600; }
+  .site-btn small { display:block; color:var(--muted); font-weight:400; }
+  main { flex:1; padding:24px 28px; max-width:860px; }
+  fieldset { border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin:0 0 18px; background:var(--card); }
+  legend { font-weight:600; padding:0 6px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  label { display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+  input[type=text], input[type=url], input[type=number], textarea, select {
+    width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px; font:inherit; background:#fff; }
+  input:focus, textarea:focus { outline:2px solid #f6caca; border-color:var(--accent); }
+  textarea { min-height:84px; resize:vertical; }
+  .row-color { display:flex; gap:8px; align-items:center; }
+  .row-color input[type=color] { width:42px; height:38px; padding:2px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  .check { display:flex; align-items:center; gap:8px; }
+  .check input { width:auto; }
+  .cat { border:1px solid var(--line); border-radius:10px; margin-bottom:12px; }
+  .cat > summary { cursor:pointer; padding:10px 12px; font-weight:600; }
+  .cat .cat-body { padding:0 12px 12px; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; color:var(--muted); font-weight:500; padding:4px 6px; }
+  td { padding:3px 4px; }
+  td input { padding:6px 8px; }
+  .del { border:none; background:none; color:var(--accent); cursor:pointer; font-size:16px; line-height:1; }
+  .add { border:1px dashed var(--line); background:none; padding:6px 10px; border-radius:8px; cursor:pointer; color:var(--muted); margin-top:6px; }
+  .actions { position:sticky; bottom:0; background:linear-gradient(transparent,var(--bg) 30%); padding:16px 0; display:flex; gap:10px; align-items:center; }
+  button.primary { background:var(--accent); color:#fff; border:none; padding:10px 18px; border-radius:8px; font-weight:600; cursor:pointer; }
+  button.ghost { background:#fff; color:var(--ink); border:1px solid var(--line); padding:10px 16px; border-radius:8px; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:wait; }
+  #status { font-size:13px; color:var(--muted); }
+  #status.err { color:var(--accent); }
+  #result { margin-top:14px; }
+  pre { background:#0f1115; color:#e6e6e6; padding:12px 14px; border-radius:10px; overflow:auto; font-size:12px; }
+  a.dl { color:var(--accent); font-weight:600; }
+</style>
+</head>
+<body>
+<header><span class="dot"></span><h1>Cookie Banner Builder</h1></header>
+<div class="layout">
+  <aside>
+    <h2>Sites</h2>
+    <div id="siteList"></div>
+    <button class="add" id="newSite" style="width:100%; margin-top:8px;">+ New site</button>
+  </aside>
+
+  <main>
+    <fieldset>
+      <legend>Identity</legend>
+      <div class="grid">
+        <div><label>Site ID (file & bundle name)</label><input type="text" id="id" placeholder="varindia" /></div>
+        <div><label>Label (display only)</label><input type="text" id="label" placeholder="VARINDIA" /></div>
+        <div><label>Cookie name</label><input type="text" id="cookieName" placeholder="varindia_consent" /></div>
+        <div><label>Cookie domain (optional, for subdomains)</label><input type="text" id="cookieDomain" placeholder=".varindia.com" /></div>
+        <div><label>Trigger element id (opens preferences)</label><input type="text" id="triggerId" placeholder="cookie-settings" /></div>
+        <div class="row-color"><div style="flex:1"><label>Accent color</label><input type="text" id="accentText" placeholder="#DB2927" /></div><input type="color" id="accent" /></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Policy & behavior</legend>
+      <div class="grid">
+        <div style="grid-column:1/3"><label>Privacy / Cookie Policy URL</label><input type="url" id="policyUrl" placeholder="https://www.varindia.com/cookie-policy" /></div>
+        <div><label>Consent version (bump to re-prompt)</label><input type="number" id="consentVersion" min="1" value="1" /></div>
+        <div><label>Expiry (days)</label><input type="number" id="expiryDays" min="1" value="182" /></div>
+        <div><label>GTM dataLayer event</label><input type="text" id="dataLayerEvent" value="cookie_consent_update" /></div>
+        <div class="check" style="align-self:end"><input type="checkbox" id="honorGpc" checked /><label style="margin:0">Honor GPC signal</label></div>
+        <div class="check" style="align-self:end"><input type="checkbox" id="consentMode" checked /><label style="margin:0">Google Consent Mode v2</label></div>
+      </div>
+      <div style="margin-top:12px"><label>Banner text</label><textarea id="bannerText"></textarea></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Cookie tables</legend>
+      <div id="cats"></div>
+    </fieldset>
+
+    <div class="actions">
+      <button class="primary" id="buildBtn">Build artifact</button>
+      <button class="ghost" id="saveBtn">Save config</button>
+      <span id="status"></span>
+    </div>
+    <div id="result"></div>
+  </main>
+</div>
+
+<script>
+const CATS = ["necessary", "analytics", "functional", "marketing"];
+const CAT_LABELS = { necessary:"Strictly Necessary", analytics:"Analytics", functional:"Functional", marketing:"Marketing" };
+const COLS = ["name", "provider", "domain", "purpose", "duration"];
+const $ = (id) => document.getElementById(id);
+let sites = [];
+
+function emptySite() {
+  return {
+    id:"", label:"", triggerId:"cookie-settings",
+    config:{
+      cookieName:"", consentVersion:1, expiryDays:182, policyUrl:"", honorGpc:true,
+      labels:{ bannerText:"" }, theme:{ "--cc-accent":"#DB2927" },
+      gtm:{ consentMode:true, dataLayerEvent:"cookie_consent_update" },
+      categories: Object.fromEntries(CATS.map(k => [k, { cookies:[] }])),
+    },
+  };
+}
+
+function renderCats(categories) {
+  $("cats").innerHTML = "";
+  for (const key of CATS) {
+    const cat = categories[key] || { cookies:[] };
+    const det = document.createElement("details");
+    det.className = "cat"; det.open = key !== "necessary";
+    det.innerHTML = `<summary>${CAT_LABELS[key]}</summary><div class="cat-body" data-cat="${key}">
+      <table><thead><tr>${COLS.map(c=>`<th>${c}</th>`).join("")}<th></th></tr></thead><tbody></tbody></table>
+      <button type="button" class="add" data-add="${key}">+ Add cookie</button></div>`;
+    $("cats").appendChild(det);
+    const tbody = det.querySelector("tbody");
+    (cat.cookies || []).forEach(ck => tbody.appendChild(cookieRow(ck)));
+    det.querySelector("[data-add]").onclick = () => tbody.appendChild(cookieRow({}));
+  }
+}
+function cookieRow(ck) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = COLS.map(c => `<td><input type="text" data-col="${c}" value="${(ck[c]||"").replace(/"/g,"&quot;")}"></td>`).join("")
+    + `<td><button type="button" class="del" title="Remove">×</button></td>`;
+  tr.querySelector(".del").onclick = () => tr.remove();
+  return tr;
+}
+
+function load(site) {
+  const c = site.config || {};
+  $("id").value = site.id || "";
+  $("label").value = site.label || "";
+  $("triggerId").value = site.triggerId || "cookie-settings";
+  $("cookieName").value = c.cookieName || "";
+  $("cookieDomain").value = c.cookieDomain || "";
+  $("policyUrl").value = c.policyUrl || "";
+  $("consentVersion").value = c.consentVersion ?? 1;
+  $("expiryDays").value = c.expiryDays ?? 182;
+  $("honorGpc").checked = c.honorGpc !== false;
+  $("consentMode").checked = !c.gtm || c.gtm.consentMode !== false;
+  $("dataLayerEvent").value = (c.gtm && c.gtm.dataLayerEvent) || "cookie_consent_update";
+  $("bannerText").value = (c.labels && c.labels.bannerText) || "";
+  const accent = (c.theme && c.theme["--cc-accent"]) || "#DB2927";
+  $("accentText").value = accent;
+  try { $("accent").value = accent; } catch (e) {}
+  renderCats(c.categories || {});
+  highlight(site.id);
+}
+
+function collect() {
+  const categories = {};
+  for (const key of CATS) {
+    const body = document.querySelector(`[data-cat="${key}"]`);
+    const cookies = [...body.querySelectorAll("tbody tr")].map(tr => {
+      const o = {};
+      tr.querySelectorAll("input[data-col]").forEach(i => { if (i.value.trim()) o[i.dataset.col] = i.value.trim(); });
+      return o;
+    }).filter(o => o.name);
+    categories[key] = key === "necessary" ? { enabled:true, locked:true, cookies } : { cookies };
+  }
+  const config = {
+    cookieName: $("cookieName").value.trim(),
+    consentVersion: Number($("consentVersion").value) || 1,
+    expiryDays: Number($("expiryDays").value) || 182,
+    policyUrl: $("policyUrl").value.trim() || undefined,
+    honorGpc: $("honorGpc").checked,
+    labels: { bannerText: $("bannerText").value.trim() },
+    theme: { "--cc-accent": $("accentText").value.trim() || "#DB2927" },
+    gtm: { consentMode: $("consentMode").checked, dataLayerEvent: $("dataLayerEvent").value.trim() || "cookie_consent_update" },
+    categories,
+  };
+  const dom = $("cookieDomain").value.trim();
+  if (dom) config.cookieDomain = dom;
+  return { id: $("id").value.trim(), label: $("label").value.trim(), triggerId: $("triggerId").value.trim() || "cookie-settings", config };
+}
+
+function highlight(id) {
+  document.querySelectorAll(".site-btn").forEach(b => b.classList.toggle("active", b.dataset.id === id));
+}
+function renderList() {
+  const el = $("siteList"); el.innerHTML = "";
+  sites.forEach(s => {
+    const b = document.createElement("button");
+    b.className = "site-btn"; b.dataset.id = s.id;
+    b.innerHTML = `${s.label || s.id}<small>${(s.config && s.config.cookieName) || ""}</small>`;
+    b.onclick = () => load(s);
+    el.appendChild(b);
+  });
+}
+
+async function refresh() {
+  const r = await fetch("/api/sites");
+  sites = await r.json();
+  renderList();
+  if (sites.length) load(sites[0]); else load(emptySite());
+}
+
+function setStatus(msg, err) { const s = $("status"); s.textContent = msg; s.className = err ? "err" : ""; }
+
+async function post(path) {
+  const site = collect();
+  if (!site.id) { setStatus("Site ID is required", true); return null; }
+  if (!site.config.cookieName) { setStatus("Cookie name is required", true); return null; }
+  const r = await fetch(path, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(site) });
+  return r.json();
+}
+
+$("accent").oninput = () => { $("accentText").value = $("accent").value; };
+$("accentText").oninput = () => { try { $("accent").value = $("accentText").value; } catch (e) {} };
+$("newSite").onclick = () => { load(emptySite()); $("id").focus(); };
+
+$("saveBtn").onclick = async () => {
+  setStatus("Saving…"); const res = await post("/api/save"); if (!res) return;
+  if (res.ok) { setStatus("Saved " + res.saved); await refresh(); highlight($("id").value.trim()); }
+  else setStatus(res.error, true);
+};
+
+$("buildBtn").onclick = async () => {
+  $("buildBtn").disabled = true; setStatus("Building…"); $("result").innerHTML = "";
+  const res = await post("/api/build"); $("buildBtn").disabled = false;
+  if (!res) return;
+  if (res.ok) {
+    setStatus("Built " + res.file);
+    const tag = `<script src="https://YOUR-CDN/${res.file.split("/").pop()}"><\/script>`;
+    $("result").innerHTML =
+      `<p>✅ Artifact: <a class="dl" href="${res.url}" download>${res.file.split("/").pop()}</a> &nbsp;·&nbsp; saved <code>${res.saved}</code></p>
+       <p style="color:var(--muted)">Drop this above the GTM snippet, and add an element with id <code>${$("triggerId").value || "cookie-settings"}</code> to reopen preferences:</p>
+       <pre>${tag.replace(/</g,"&lt;")}</pre>`;
+    await refresh(); highlight($("id").value.trim());
+  } else setStatus(res.error, true);
+};
+
+refresh();
+</script>
+</body>
+</html>
